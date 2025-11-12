@@ -61,6 +61,10 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
+    if(Controller.ButtonX.pressing()) {
+      std::cout << "Button X is being pressed." << std::endl;
+    }
+    std::cout << Controller.Axis1.position() << std::endl;
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
