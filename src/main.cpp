@@ -78,18 +78,18 @@ void usercontrol(void) {
     
     wait(20, msec);
   }
+}
 
 
-
-int main() ;
+int main() 
+{
   
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
  
-  pre_auton();
+  pre_auton() ;
 
- 
   while (true) {
     wait(100, msec);
   }
