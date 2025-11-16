@@ -56,6 +56,26 @@ void usercontrol(void) {
     Left.spin(fwd, (leftpow * 0.12), volt);
     Right.spin(fwd, (rightpow * 0.12), volt);
 
+       if (Controller.ButtonR1.pressing()) {
+      Intake.spin(fwd, 600, rpm);
+    }
+    else if (Controller.ButtonR2.pressing()) {
+      Intake.spin(reverse, 600, rpm);
+    }
+    else {
+      Intake.stop(coast);
+    }
+    
+    if (Controller.ButtonL1.pressing()) {
+      Outtake.spin(fwd, 600, rpm);
+    }
+    else if (Controller.ButtonL2.pressing()) {
+      Outtake.spin(reverse, 600, rpm);
+    }
+    else {
+      Outtake.stop(coast);
+    }
+    
     wait(20, msec);
   }
 
