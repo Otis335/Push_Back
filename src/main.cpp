@@ -33,7 +33,7 @@ void usercontrol(void) {
     float turn = Controller.Axis1.value();
     if (turn < 5 && turn > -5) 
     {
-      turn - 0;
+      turn = 0;
     }
     turn = turn / 1.27;
     throttle = pow(throttle, 3) / 10000;
