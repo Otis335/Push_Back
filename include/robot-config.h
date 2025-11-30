@@ -1,6 +1,7 @@
 using namespace vex;
 
 extern brain Brain;
+extern inertial Inertial;
 extern controller Controller;
 extern motor FrontRight;
 extern motor FrontLeft;

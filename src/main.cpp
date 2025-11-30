@@ -1,20 +1,169 @@
 
 
 #include "vex.h"
+#include <robot-config.h>
 
 using namespace vex;
 
 
 competition Competition;
 
+void driveForward (int timeMsec) {
+  Left.spin (forward, 200, rpm);
+  Right.spin (fwd, 200, rpm);
+  wait(20, msec);
+  Left.stop();
+  Right.stop();
+}
+
+void driveReverse (int timeMsec) {
+  Left.spin (reverse, 200, rpm);
+  Right.spin (reverse, 200, rpm);
+  wait(20, msec);
+  Left.stop();
+  Right.stop();
+}
+
+void spinIntake (int timeMsec) {
+  Intake.spin (fwd, 600, rpm);
+  wait(20, msec);
+  Intake.stop (coast);
+}
+
+void scoreMiddle (int timeMsec) {
+  Outtake1.spin (fwd, 600, rpm);
+  Outtake2.spin (reverse, 600, rpm);
+  wait(20, msec);
+  Outtake1.stop (coast);
+  Outtake2.stop (coast);
+}
+
+void scoreLong (int timeMsec) {
+  Outtake1.spin (fwd, 600, rpm);
+  Outtake2.spin (fwd, 600, rpm);
+  wait(20, msec);
+  Outtake1.stop(coast);
+  Outtake2.stop(coast);
+}
+
+void turnto180 (int angle) {
+  Inertial.setHeading (0, degrees);
+  wait(100, msec);
+
+  while (fabs(180 - Inertial.heading(degrees)) > 1){ 
+    double error = 180 - Inertial.heading(degrees);
+    double turnPower = error * 0.5; 
+
+    Left.spin (fwd, 200, rpm);
+    Right.spin (reverse, 200, rpm);
+    wait(20, msec);
+  }
+
+  Left.stop();
+  Right.stop();
+}
+
+void turnto25 (int angle) {
+  Inertial.setHeading (0, degrees);
+  wait(100, msec);
+
+  while (fabs(25 - Inertial.heading(degrees)) > 1){ 
+    double error = 25 - Inertial.heading(degrees);
+    double turnPower = error * 0.5; 
+
+    Left.spin (fwd, 200, rpm);
+    Right.spin (reverse, 200, rpm);
+    wait(20, msec);
+  }
+
+  Left.stop();
+  Right.stop();
+}
+
+void turnto45 (int angle) {
+  Inertial.setHeading (0, degrees);
+  wait(100, msec);
+
+  while (fabs(45 - Inertial.heading(degrees)) > 1){ 
+    double error = 45 - Inertial.heading(degrees);
+    double turnPower = error * 0.5; 
+
+    Left.spin (fwd, 200, rpm);
+    Right.spin (reverse, 200, rpm);
+    wait(20, msec);
+  }
+
+  Left.stop();
+  Right.stop();
+}
+
+void turnto125 (int angle) {
+  Inertial.setHeading (0, degrees);
+  wait(100, msec);
+
+  while (fabs(125 - Inertial.heading(degrees)) > 1){ 
+    double error = 125 - Inertial.heading(degrees);
+    double turnPower = error * 0.7; 
+
+    Left.spin (fwd, 200, rpm);
+    Right.spin (reverse, 200, rpm);
+    wait(20, msec);
+  }
+
+  Left.stop();
+  Right.stop();
+}
+
+void turnto90 (int angle) {
+  Inertial.setHeading (0, degrees);
+  wait(100, msec);
+
+  while (fabs(125 - Inertial.heading(degrees)) > 1){ 
+    double error = 125 - Inertial.heading(degrees);
+    double turnPower = error * 0.7; 
+
+    Left.spin (fwd, 200, rpm);
+    Right.spin (reverse, 200, rpm);
+    wait(20, msec);
+  }
+
+  Left.stop();
+  Right.stop();
+}
+
 
 void pre_auton(void) {
+vexcodeInit();
 
+Inertial.calibrate();
+  while(Inertial.isCalibrating()) {
+  wait (100, msec);
+  }
 
 }
 
 
+
 void autonomous(void) {
+  turnto25 (25);
+  driveForward (1800);
+  spinIntake (1000);
+  turnto45 (-45);
+  driveForward (1000);
+  scoreMiddle (500);
+  wait (500, msec);
+  driveReverse (1000);
+  turnto125 (-125);
+  driveForward(500);
+  turnto90 (90);
+  //include match loader here
+  driveForward(2000);
+  spinIntake(1500);
+  driveReverse (500);
+  //close match loader or something
+  turnto180 (180);
+  driveForward (2000);
+  scoreLong (1000)
 
 }
 
@@ -76,6 +225,16 @@ void usercontrol(void) {
       Outtake.stop(coast);
     }
 
+    if (Controller.ButtonA.pressing()) {
+      Outtake1.spin(fwd, 600, rpm);
+    }
+    else if (Controller.ButtonY.pressing()) {
+      Outtake1.spin(reverse, 600, rpm);
+    }
+    else {
+      Outtake1.stop(coast);
+    }
+    
     wait(20, msec);
   }
 
