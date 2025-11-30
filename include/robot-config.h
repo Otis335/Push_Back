@@ -9,7 +9,7 @@ extern motor BackRight;
 extern motor BackLeft;
 extern motor Middle;
 extern motor Outtake1;
-extern motor Outtake2
+extern motor Outtake2;
 
 void vexcodeInit(void);
 
