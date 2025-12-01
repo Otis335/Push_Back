@@ -9,17 +9,43 @@ using namespace vex;
 competition Competition;
 
 void driveForward (int timeMsec) {
-  Left.spin (forward, 200, rpm);
-  Right.spin (fwd, 200, rpm);
-  wait(20, msec);
+    Inertial.setHeading (0, degrees);
+
+    int elaspsed = 0;
+
+  while (0 < timeMsec) {
+    double heading = 0 - Inertial.heading(degrees);
+    double error = 0 - heading;
+
+    double correction = error * 0.8; 
+
+  Left.spin (forward, 200 + correction, rpm);
+  Right.spin (fwd, 200 - correction, rpm);
+  wait(10, msec);
+  elaspsed += 10;
+
+  }
   Left.stop();
   Right.stop();
 }
 
 void driveReverse (int timeMsec) {
-  Left.spin (reverse, 200, rpm);
-  Right.spin (reverse, 200, rpm);
-  wait(20, msec);
+    Inertial.setHeading (0, degrees);
+
+    int elaspsed = 0;
+
+  while (0 < timeMsec) {
+    double heading = 0 - Inertial.heading(degrees);
+    double error = 0 - heading;
+
+    double correction = error * 0.8; 
+
+  Left.spin (reverse, 200 + correction, rpm);
+  Right.spin (reverse, 200 - correction, rpm);
+  wait(10, msec);
+  elaspsed += 10;
+
+  }
   Left.stop();
   Right.stop();
 }
@@ -52,7 +78,7 @@ void turntoAngle (int angle) {
 
   while (fabs(angle - Inertial.heading(degrees)) > 1){ 
     double error = angle - Inertial.heading(degrees);
-    double turnPower = error * 1000; 
+    double turnPower = error * (5/18); //(100/360)
 
     Left.spin (fwd, turnPower, rpm);
     Right.spin (reverse, turnPower, rpm);
@@ -76,12 +102,11 @@ Inertial.calibrate();
 
 
 void autonomous(void) {
-  turntoAngle (25);
   driveForward (1800);
   spinIntake (1000);
   turntoAngle (-45);
   driveForward (1000);
-  scoreMiddle (500);
+  scoreMiddle (1000);
   wait (500, msec);
   driveReverse (1000);
   turntoAngle (-125);
@@ -93,7 +118,7 @@ void autonomous(void) {
   driveReverse (500);
   //close match loader or something
   turntoAngle (180);
-  driveForward (2000);
+  driveForward (1000);
   scoreLong (1000);
 
 }
