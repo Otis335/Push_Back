@@ -6,7 +6,7 @@ using code = vision::code;
 
 brain Brain;
 
-inertial Inertial(PORT18); //port not yet confirmed
+inertial Inertial(PORT21); 
 
 controller Controller;
 motor FrontRight = motor(PORT11, ratio18_1, false); 
@@ -21,5 +21,5 @@ void vexcodeInit(void) {}
 
 motor_group Left = motor_group(FrontLeft, BackLeft);
 motor_group Right = motor_group(FrontRight, BackRight);
-motor_group Intake = motor_group(Middle);
+motor_group Intake = motor_group(Middle, Outtake1);
 motor_group Outtake = motor_group(Outtake2);

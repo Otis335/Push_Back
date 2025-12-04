@@ -3,7 +3,7 @@ using namespace vex;
 
 competition Competition;
 
-// Helper functions
+
 void driveForward(int timeMsec) {
   Inertial.setHeading(0, degrees);
 
@@ -65,20 +65,34 @@ void scoreLong(int timeMsec) {
 }
 
 void turntoAngle(int angle) {
-  Inertial.setHeading(0, degrees);
   wait(100, msec);
 
-  while (fabs(angle - Inertial.heading(degrees)) > 1) {
-    double error = angle - Inertial.heading(degrees);
-    double turnPower = error * (5.0 / 18.0); // 100/360
+  const double threshold = 1; // how close to target angle to stop
+  const double kP = 0.28; // how strongly to turn
+  const double maxPower = 80; // max rpm
 
-    Left.spin(fwd, turnPower, rpm);
-    Right.spin(reverse, turnPower, rpm);
+  double error = angle - Inertial.heading(degrees);
+  while (error > threshold || error < -threshold) {
+    error = angle - Inertial.heading(degrees);
+    double turnPower = error * kP;
+
+    if (turnPower > maxPower) turnPower = maxPower;
+    if (turnPower < -maxPower) turnPower = -maxPower;
+
+    if (turnPower >= 0) {
+      Left.spin(forward, turnPower, rpm);
+      Right.spin(reverse, turnPower, rpm);
+    } else {
+      Left.spin(reverse, -turnPower, rpm);
+      Right.spin(forward, -turnPower, rpm);
+    }
+
     wait(20, msec);
   }
 
   Left.stop();
   Right.stop();
+
 }
 
 
@@ -93,24 +107,23 @@ void pre_auton(void) {
 
 
 void autonomous(void) {
-  driveForward(1800);
-  spinIntake(1000);
-  turntoAngle(-45);
-  driveForward(1000);
+  driveForward(200);
+  turntoAngle(-90);
+  driveForward(700);
+  spinIntake(1500);
+  turntoAngle(45);
+  driveForward(375);
   scoreMiddle(1000);
   wait(500, msec);
-  driveReverse(1000);
-  turntoAngle(-125);
-  driveForward(500);
-  turntoAngle(90);
-  // include match loader here
-  driveForward(2000);
+  driveReverse(375);
+  turntoAngle(-45); 
+  driveForward(900);
   spinIntake(1500);
-  driveReverse(500);
-  // close match loader or something
-  turntoAngle(180);
-  driveForward(1000);
-  scoreLong(1000);
+  turntoAngle(-45);
+  driveForward(750);
+  turntoAngle(45);
+  driveForward(400);
+  scoreLong(2000);
 }
 
 
@@ -154,27 +167,17 @@ void usercontrol(void) {
     }
 
     if (Controller.ButtonL1.pressing()) {
-      Outtake1.spin(fwd, 600, rpm);
+      Outtake.spin(fwd, 600, rpm);
     } 
     else if (Controller.ButtonL2.pressing()) {
-      Outtake1.spin(reverse, 600, rpm);
+      Outtake.spin(reverse, 600, rpm);
     } 
     else {
-      Outtake1.stop(coast);
+      Outtake.stop(coast);
     }
 
-    if (Controller.ButtonA.pressing()) {
-      Outtake2.spin(fwd, 600, rpm);
-    } else if (Controller.ButtonY.pressing()) {
-      Outtake2.spin(reverse, 600, rpm);
-    } else {
-      Outtake2.stop(coast);
-    }
-
-    wait(20, msec);
   }
 }
-
 
 int main() {
   vexcodeInit();
@@ -186,5 +189,5 @@ int main() {
 
   while (true) {
     wait(100, msec);
-  }
+  };
 }
