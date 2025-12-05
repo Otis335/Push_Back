@@ -64,27 +64,24 @@ void scoreLong(int timeMsec) {
   Outtake2.stop(coast);
 }
 
-void turntoAngle(int angle) {
-  wait(100, msec);
+void turntoAngle(int angle, int maxRPM) {
+  int error = angle - Inertial.rotation(deg);
+  while (abs(error)>1){
 
-  const double threshold = 1; // how close to target angle to stop
-  const double kP = 0.28; // how strongly to turn
-  const double maxPower = 80; // max rpm
+  error = angle - Inertial.rotation(deg);
 
-  double error = angle - Inertial.heading(degrees);
-  while (error > threshold || error < -threshold) {
-    error = angle - Inertial.heading(degrees);
-    double turnPower = error * kP;
+  int speedRPM = error * 1;
+   
 
-    if (turnPower > maxPower) turnPower = maxPower;
-    if (turnPower < -maxPower) turnPower = -maxPower;
+    if (speedRPM > maxRPM) speedRPM = maxRPM;
+    if (speedRPM < -maxRPM) speedRPM = -maxRPM;
 
-    if (turnPower >= 0) {
-      Left.spin(forward, turnPower, rpm);
-      Right.spin(reverse, turnPower, rpm);
+    if (speedRPM >= 0) {
+      Left.spin(forward, speedRPM, rpm);
+      Right.spin(reverse, speedRPM, rpm);
     } else {
-      Left.spin(reverse, -turnPower, rpm);
-      Right.spin(forward, -turnPower, rpm);
+      Left.spin(reverse, -speedRPM, rpm);
+      Right.spin(forward, -speedRPM, rpm);
     }
 
     wait(20, msec);
@@ -101,27 +98,27 @@ void pre_auton(void) {
 
   Inertial.calibrate();
   while (Inertial.isCalibrating()) {
-    wait(100, msec);
+    wait(20, msec);
   }
 }
 
 
 void autonomous(void) {
-  driveForward(200);
-  turntoAngle(-90);
+  driveForward(100);
+  turntoAngle(-90, 333);
   driveForward(700);
   spinIntake(1500);
-  turntoAngle(45);
-  driveForward(375);
+  turntoAngle(-45, 333);
+  driveForward(200);
   scoreMiddle(1000);
   wait(500, msec);
-  driveReverse(375);
-  turntoAngle(-45); 
-  driveForward(900);
+  driveReverse(200);
+  turntoAngle(-45,333); 
+  driveForward(700);
   spinIntake(1500);
-  turntoAngle(-45);
+  turntoAngle(-45,333);
   driveForward(750);
-  turntoAngle(45);
+  turntoAngle(45,333);
   driveForward(400);
   scoreLong(2000);
 }
